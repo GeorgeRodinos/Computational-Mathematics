@@ -1,6 +1,5 @@
 # Computational-Mathematics
-Numerical analysis problems
 
-Hello there! My name is George Rodinos, nice to see you at this branch!
+Hello there! My name is George Rodinos, nice to see you here!
 
-You are welcome to explore some basic algorithms in Numerical Analysis!
+You are welcome to explore some algorithms in Computational Mathematics!
