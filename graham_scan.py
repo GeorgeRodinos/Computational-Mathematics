@@ -33,8 +33,8 @@ def lowest_point_index(coord):
     return lowest_point_index
 
 
-# def distance_square(p, q):
-#     return (q[1]-p[1])**2 + (q[0]-p[0])**2
+def distance_square(p, q):
+    return (q[1]-p[1])**2 + (q[0]-p[0])**2
 
 def polar_angle_dict(p, coord):
     '''
@@ -48,11 +48,16 @@ def polar_angle_dict(p, coord):
 
     min_index = lowest_point_index(coord)
     coord[0], coord[min_index] = coord[min_index], coord[0]
-    atan2_val = []
     dict_p_angle = {}
     for val in coord[1:]:
-        atan2_val.append(atan2(p[1]-val[1], p[0]-val[0]))
-        dict_p_angle[atan2_val[-1]] = val
+        at2 = atan2(p[1]-val[1], p[0]-val[0])
+        if at2 in dict_p_angle:
+            d1 = distance_square(coord[min_index], dict_p_angle[at2])
+            d2 = distance_square(coord[min_index], val)
+            if d1 < d2:
+                dict_p_angle[at2] = val
+        else:
+            dict_p_angle[at2] = val
     return dict_p_angle
 
 
@@ -73,7 +78,7 @@ def sort_points(coord):
     '''
 
     d = polar_angle_dict(coord[lowest_point_index(coord)], coord)
-    od = collections.OrderedDict(sorted(d.items()))
+    od = collections.OrderedDict(sorted(d.items()))  
     return od
 
 print(sort_points(create_points(10)))
@@ -115,6 +120,6 @@ def ch_plot(coord, show_flag=False):
 
     return hull
 
-# pts = create_points(15)
-# hull = ch_plot(pts)
-# scatter_plot(pts, hull)
+pts = create_points(15)
+hull = ch_plot(pts, True)
+scatter_plot(pts, hull)
