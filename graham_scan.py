@@ -14,20 +14,20 @@ def create_points(num_of_p, min=0, max=100):
     return [[randint(min,max), randint(min, max)] for _ in range(num_of_p)]
 
 
-def lowest_point_index(coord): 
+def lowest_point_index(data): 
     '''
     The lowest_point function returns the  index of the lowest 
-    point of the input points according to the y-coordinate
+    point of the input points according to the y-datainate
 
-    coord: list of lists 
+    data: list of lists 
     '''
 
-    min = coord[0][1]
+    min = data[0][1]
     
     lowest_point_index = 0
-    for index in range(1, len(coord)):
-        if coord[index][1] < min:
-            min = coord[index][1]
+    for index in range(1, len(data)):
+        if data[index][1] < min:
+            min = data[index][1]
             lowest_point_index = index
             
     return lowest_point_index
@@ -36,24 +36,24 @@ def lowest_point_index(coord):
 def distance_square(p, q):
     return (q[1]-p[1])**2 + (q[0]-p[0])**2
 
-def polar_angle_dict(p, coord):
+def polar_angle_dict(p, data):
     '''
     The polar_angle_dict function returns a dictionary with keys the
     polar angles of the lowest point with the rest points and values
     the corresponding points 
 
-    p: list with the x,y coordinates of the lowest point
-    coord: list of lists
+    p: list with the x,y datainates of the lowest point
+    data: list of lists
     '''
 
-    min_index = lowest_point_index(coord)
-    coord[0], coord[min_index] = coord[min_index], coord[0]
+    min_index = lowest_point_index(data)
+    data[0], data[min_index] = data[min_index], data[0]
     dict_p_angle = {}
-    for val in coord[1:]:
+    for val in data[1:]:
         at2 = atan2(p[1]-val[1], p[0]-val[0])
         if at2 in dict_p_angle:
-            d1 = distance_square(coord[min_index], dict_p_angle[at2])
-            d2 = distance_square(coord[min_index], val)
+            d1 = distance_square(data[min_index], dict_p_angle[at2])
+            d2 = distance_square(data[min_index], val)
             if d1 < d2:
                 dict_p_angle[at2] = val
         else:
@@ -70,45 +70,45 @@ def det(p1, p2, p3):
     return d
 
 
-def sort_points(coord):
+def sort_points(data):
     '''
     The sort_points function returns the dictionary from the polar_angle_function
     sorted based on keys
 
     '''
 
-    d = polar_angle_dict(coord[lowest_point_index(coord)], coord)
+    d = polar_angle_dict(data[lowest_point_index(data)], data)
     od = collections.OrderedDict(sorted(d.items()))  
     return od
 
 print(sort_points(create_points(10)))
-def scatter_plot(coord, convex_hull=None):
+def plot_func(data, convex_hull=None):
     '''
     The scatter_plot function plots the points and the Convex Hull
 
     convex_hull: if convex_hull is None then the scatter_plot function
     plots only the points
     '''
-    x = [x for x, y in coord]
-    y = [y for x, y in coord]
-    plt.scatter(x, y)
+    x = [x for x, y in data]
+    y = [y for x, y in data]
+    plt.scatter(x, y, c='r')
 
     if convex_hull != None:
         for i in range(1, len(convex_hull)+1):
             if i==len(convex_hull): i = 0
-            c0 =convex_hull[i-1]
-            c1 = convex_hull[i]
-            plt.plot((c0[0],c1[0]), (c0[1],c1[1]), 'r')
+            p1 =convex_hull[i-1]
+            p2 = convex_hull[i]
+            plt.plot((p1[0],p2[0]), (p1[1],p2[1]), 'b')
 
     
     plt.show()
 
-def ch_plot(coord, show_flag=False):
+def ch(data, show_flag=False):
 
-    min_index = lowest_point_index(coord)
-    anchor = coord[min_index]
+    min_index = lowest_point_index(data)
+    anchor = data[min_index]
     sorted_points =[]
-    for v in sort_points(coord).values():
+    for v in sort_points(data).values():
         sorted_points.append(v)
     hull = [anchor, sorted_points[0]]
     for s in sorted_points[1:]:
@@ -116,10 +116,10 @@ def ch_plot(coord, show_flag=False):
             hull.pop()
         hull.append(s)
         if show_flag: 
-            scatter_plot(coord, hull)
+            plot_func(data, hull)
 
     return hull
 
 pts = create_points(15)
-hull = ch_plot(pts, True)
-scatter_plot(pts, hull)
+hull = ch(pts)
+plot_func(pts, hull)
